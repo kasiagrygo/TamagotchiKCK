@@ -1,0 +1,148 @@
+﻿@page "/Game"
+@using Blazor.Extensions
+@using Blazor.Extensions.Canvas.Canvas2D
+
+<img @ref="cat_default" hidden id="cat_default" src="\animal-clipart-cat.png" class="cat"/>
+<img @ref="background_default" hidden id="background_default" src="https://i.pinimg.com/736x/ef/ed/e5/efede56113ed52c90f51da54d05fc3ac.jpg"/>
+
+
+<div class="progress-bar__container">
+    <div>
+        <MudText>Food</MudText>
+        <MudProgressLinear Size=Size.Large Color=Color.Primary Rounded=true Max="100" Value="@FoodValue">@Math.Round(@FoodValue)</MudProgressLinear>
+    </div>
+    <div>
+        <MudText>Shower</MudText>
+        <MudProgressLinear Size=Size.Large Color=Color.Primary Rounded=true Max="100" Value="@ShowerValue">@Math.Round(@ShowerValue)</MudProgressLinear>
+    </div>
+     <div>
+        <MudText>Play</MudText>
+        <MudProgressLinear Size=Size.Large Color=Color.Primary Rounded=true Max="100" Value="@PlayValue">@Math.Round(@PlayValue)</MudProgressLinear>
+    </div>
+    <div>
+        <MudText>Sleep</MudText>
+        <MudProgressLinear Size=Size.Large Color=Color.Primary Rounded=true Max="100" Value="@SleepValue">@Math.Round(@SleepValue)</MudProgressLinear>
+    </div>
+</div>
+<hr style="margin-top: 3em;">
+<div class="buttons_container">
+        <MudButton Size=Size.Medium OnClick="()=>foodClick()"><img src="\fish_11570553.png" width="30" height="30"/></MudButton>
+        <MudButton Size=Size.Medium OnClick="()=>sleepClick()"><img src="\bed_724092.png" width="30" height="30"/></MudButton>
+        <MudButton Size=Size.Medium OnClick="()=>showerClick()"><img src="\shower_2338169.png" width="30" height="30"/></MudButton>
+        <MudButton Size=Size.Medium OnClick="()=>playClick()"><img src="\415401762_751955176505798_2636429676405639171_n.png" width="30" height="30"/></MudButton>
+</div>
+
+<input type="text" @onkeydown="KeyboardEventHandler " @onkeypress=" KeyboardEventHandler " @onkeyup="KeyboardEventHandler "/>
+
+<BECanvas Width="1200" Height="500" @ref="_canvasReference"></BECanvas>
+
+@code {
+    private double FoodValue = 100;
+    private double ShowerValue = 100;
+    private double PlayValue = 100;
+    private double SleepValue = 100;
+
+    private int x=600;
+    private int y=250;
+
+    private int catRendered = 0;
+
+    private ElementReference cat_default;
+    private ElementReference background_default;
+
+    private Canvas2DContext _context;
+
+    protected BECanvasComponent _canvasReference;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        this._context = await this._canvasReference.CreateCanvas2DAsync();
+
+        if (catRendered <= 20)
+        {
+            try
+            {
+                await this._context.DrawImageAsync(background_default, 0, 0, 1150, 500);
+                await this._context.DrawImageAsync(cat_default, 600, 250, 280, 200);
+                catRendered++;
+            }
+            catch (Exception e)
+            {
+                var x = 0;
+            }
+        }
+    }
+
+    protected override Task OnInitializedAsync()
+    {
+        RunInBackground(TimeSpan.FromMilliseconds(500), () => DecrementValues());
+
+        return base.OnInitializedAsync();
+    }
+
+    private void DecrementValues()
+    {
+        FoodValue -= 0.1;
+        ShowerValue -= 0.06;
+        PlayValue -= 0.2;
+        SleepValue -= 0.03;
+
+        if (SleepValue <= 0)
+            SleepValue = 0;
+        if (PlayValue <= 0)
+            PlayValue = 0;
+        if (FoodValue <= 0)
+            FoodValue = 0;
+        if (ShowerValue <= 0)
+            ShowerValue = 0;
+
+        StateHasChanged();
+    }
+
+    private async Task RunInBackground(TimeSpan timeSpan, Action action)
+    {
+        var periodicTimer = new PeriodicTimer(timeSpan);
+        while (await periodicTimer.WaitForNextTickAsync())
+        {
+            action();
+        }
+    }
+
+    private void foodClick()
+    {
+
+    }
+    private void showerClick()
+    {
+
+    }
+    private void sleepClick()
+    {
+
+    }
+    private void playClick()
+    {
+
+    }
+
+    private void KeyboardEventHandler(KeyboardEventArgs args)
+    {
+        Task.Run(() => this._context.ClearRectAsync(0, 0, 1200, 500));
+
+        if(args.Key == "ArrowRight")
+        {
+            x += 2;
+        }
+        else if (args.Key == "ArrowLeft")
+        {
+            x -= 2;
+        }
+        else
+        {
+            return;
+        }
+        Task.Run(() => this._context.DrawImageAsync(background_default, 0, 0, 1150, 500));
+        Task.Run(() => this._context.DrawImageAsync(cat_default, x, y, 280, 200));
+        
+    }
+}
