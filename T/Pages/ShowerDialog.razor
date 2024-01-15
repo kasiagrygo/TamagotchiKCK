@@ -1,0 +1,31 @@
+﻿<MudDialog>
+    <DialogActions>
+        <div class="buttons_container2">
+            <MudButton Size=Size.Medium OnClick="Clean1"><img src="\toothbrush_12321095.png" width="30" height="30"/></MudButton>
+            <MudButton Size=Size.Medium OnClick="Clean2"><img src="\shower_2338169.png" width="30" height="30"/></MudButton>
+        </div>
+        <hr style="margin-top: 2em;">
+        <div>
+            <MudButton Color="Color.Primary" OnClick="Submit">Back</MudButton>
+        </div>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+
+    [Parameter] public double ShowerValue { get; set; }
+
+    void Submit() => MudDialog.Close(DialogResult.Ok(true));
+
+    private void Clean1()
+    {
+        ShowerValue += 5;
+    }
+
+    private void Clean2()
+    {
+        ShowerValue += 10;
+    } 
+
+}

@@ -1,0 +1,31 @@
+﻿<MudDialog>
+    <DialogActions>
+        <div class="buttons_container2">
+            <MudButton Size=Size.Medium OnClick="Food1"><img src="\fries_8033280.png" width="30" height="30"/></MudButton>
+            <MudButton Size=Size.Medium OnClick="Food2"><img src="\hamburger_3075977.png" width="30" height="30"/></MudButton>
+        </div>
+        <hr style="margin-top: 2em;">
+        <div>
+            <MudButton Color="Color.Primary" OnClick="Submit">Back</MudButton>
+        </div>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+
+    [Parameter] public double FoodValue { get; set; }
+
+    void Submit() => MudDialog.Close(DialogResult.Ok(true));
+
+    private void Food1()
+    {
+        FoodValue += 5;
+    }
+
+    private void Food2()
+    {
+        FoodValue += 10;
+    } 
+
+}
