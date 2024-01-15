@@ -4,6 +4,7 @@
 @inject IDialogService DialogService
 
 <img @ref="cat_default" hidden id="cat_default" src="\animal-clipart-cat.png" class="cat"/>
+<img @ref="cat_sleep" hidden id="cat_sleep" src="\image_processing20200410-19194-1vw4u2j.png" class="cat"/>
 <img @ref="background_default" hidden id="background_default" src="https://i.pinimg.com/736x/ef/ed/e5/efede56113ed52c90f51da54d05fc3ac.jpg"/>
 
 
@@ -46,9 +47,12 @@
     private int x=500;
     private int y=250;
 
+    private bool IsSleeping { get; set; } = false;
+
     private int catRendered = 0;
 
     private ElementReference cat_default;
+    private ElementReference cat_sleep;
     private ElementReference background_default;
 
     private Canvas2DContext _context;
@@ -59,7 +63,7 @@
     {
         this._context = await this._canvasReference.CreateCanvas2DAsync();
 
-        if (catRendered <= 20)
+        if (catRendered <= 1)
         {
             try
             {
@@ -82,10 +86,10 @@
 
     private void DecrementValues()
     {
-        FoodValue -= 0.1;
-        ShowerValue -= 0.06;
-        PlayValue -= 0.2;
-        SleepValue -= 0.03;
+        FoodValue -= 0.3;
+        ShowerValue -= 0.2;
+        PlayValue -= 0.4;
+        SleepValue -= 0.1;
 
         if (SleepValue <= 0)
             SleepValue = 0;
@@ -128,18 +132,36 @@
 
         DialogService.Show<ShowerDialog>("How do you want clean yourself?", parameters, options);
     }
-    private void sleepClick()
-    {
 
+    private async Task sleepClick()
+    {
+        await this._context.ClearRectAsync(0, 0, 1200, 500);
+        if (IsSleeping == false) 
+        {
+            await this._context.DrawImageAsync(background_default, 0, 0, 1150, 500);
+            await this._context.DrawImageAsync(cat_sleep, 500, 250, 150, 200);
+            IsSleeping = true;
+            while (SleepValue < 100){
+                await Task.Delay(1000);
+                SleepValue += 0.5;
+            }
+        }
+        else
+        {
+            await this._context.DrawImageAsync(background_default, 0, 0, 1150, 500);
+            await this._context.DrawImageAsync(cat_default, 500, 250, 150, 200);
+            IsSleeping = false;
+        }
     }
+
     private void playClick()
     {
 
     }
 
-    private void KeyboardEventHandler(KeyboardEventArgs args)
+    private async Task KeyboardEventHandler(KeyboardEventArgs args)
     {
-        Task.Run(() => this._context.ClearRectAsync(0, 0, 1200, 500));
+        await this._context.ClearRectAsync(0, 0, 1200, 500);
 
         if(args.Key == "ArrowRight")
         {
@@ -153,8 +175,8 @@
         {
             return;
         }
-        //Task.Run(() => this._context.DrawImageAsync(background_default, 0, 0, 1150, 500));
-        Task.Run(() => this._context.DrawImageAsync(cat_default, x, y, 280, 200));
+        await this._context.DrawImageAsync(background_default, 0, 0, 1150, 500);
+        await this._context.DrawImageAsync(cat_default, x, y, 280, 200);
         
     }
 }
