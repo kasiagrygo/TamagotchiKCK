@@ -38,6 +38,7 @@
 
 <BECanvas Width="1200" Height="500" @ref="_canvasReference"></BECanvas>
 
+
 @code {
     private double FoodValue = 100;
     private double ShowerValue = 100;
@@ -119,9 +120,9 @@
         var parameters = new DialogParameters();
         parameters.Add("FoodValue", FoodValue);
 
-
         DialogService.Show<EatDialog>("What do you want to eat?", parameters, options);
     }
+
 
     private void showerClick()
     {
@@ -143,7 +144,7 @@
             IsSleeping = true;
             while (SleepValue < 100){
                 await Task.Delay(1000);
-                SleepValue += 0.5;
+                SleepValue += 0.8;
             }
         }
         else
@@ -161,8 +162,6 @@
 
     private async Task KeyboardEventHandler(KeyboardEventArgs args)
     {
-        await this._context.ClearRectAsync(0, 0, 1200, 500);
-
         if(args.Key == "ArrowRight")
         {
             x += 2;
@@ -175,8 +174,9 @@
         {
             return;
         }
+        await this._context.ClearRectAsync(0, 0, 1200, 500);
         await this._context.DrawImageAsync(background_default, 0, 0, 1150, 500);
-        await this._context.DrawImageAsync(cat_default, x, y, 280, 200);
+        await this._context.DrawImageAsync(cat_default, x, y, 150, 200);
         
     }
 }
