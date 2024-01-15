@@ -157,7 +157,9 @@
 
     private void playClick()
     {
+        var options = new DialogOptions { CloseOnEscapeKey = true };
 
+        DialogService.Show<PlayDialog>("Let's play a game!", options);
     }
 
     private async Task KeyboardEventHandler(KeyboardEventArgs args)

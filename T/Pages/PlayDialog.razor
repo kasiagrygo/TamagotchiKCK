@@ -1,5 +1,48 @@
-﻿<h3>PlayDialof</h3>
+﻿<MudDialog>
+    <DialogActions>
+        <div>
+            <MudButton Color="Color.Primary" OnClick="Submit">Back</MudButton>
+        </div>
+    </DialogActions>
+    <DialogContent>
+        <p>@message</p>
+        <MudTextField @bind-Value="userInput" Label="Enter a number between 1 and 99" />
+        <MudButton Color="Color.Primary" OnClick="CheckNumber">Submit</MudButton>
+    </DialogContent>
+</MudDialog>
 
 @code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
 
+    void Submit() => MudDialog.Close(DialogResult.Ok(true));
+
+    string message = "";
+    int randomNumber;
+    int userInput;
+
+    void CheckNumber()
+    {
+        if (randomNumber == 0)
+        {
+            Random random = new Random();
+            randomNumber = random.Next(1, 100);
+        }
+
+        if (userInput < 1 || userInput > 99)
+        {
+            message = "Please enter a number between 1 and 99.";
+        }
+        else if (userInput < randomNumber)
+        {
+            message = "Too small. Try again!";
+        }
+        else if (userInput > randomNumber)
+        {
+            message = "Too large. Try again!";
+        }
+        else
+        {
+            message = "Congratulations! You guessed the correct number!";
+        }
+    }
 }
