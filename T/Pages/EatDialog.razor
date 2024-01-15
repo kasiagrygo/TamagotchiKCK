@@ -14,18 +14,18 @@
 @code {
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
 
-    [Parameter] public double FoodValue { get; set; }
+    [Parameter] public EventCallback<int> onFoodAdd { get; set; }
 
     void Submit() => MudDialog.Close(DialogResult.Ok(true));
 
-    private void Food1()
+    private async Task Food1()
     {
-        FoodValue += 5;
+        await onFoodAdd.InvokeAsync(15);
     }
 
-    private void Food2()
+    private async Task Food2()
     {
-        FoodValue += 10;
+        await onFoodAdd.InvokeAsync(30);
     } 
 
 }

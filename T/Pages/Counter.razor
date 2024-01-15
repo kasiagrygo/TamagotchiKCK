@@ -101,6 +101,15 @@
         if (ShowerValue <= 0)
             ShowerValue = 0;
 
+        if (SleepValue >= 100)
+            SleepValue = 100;
+        if (PlayValue >= 100)
+            PlayValue = 100;
+        if (FoodValue >= 100)
+            FoodValue = 100;
+        if (ShowerValue >= 100)
+            ShowerValue = 100;
+
         StateHasChanged();
     }
 
@@ -115,23 +124,32 @@
 
     private void foodClick()
     {
-        var options = new DialogOptions { CloseOnEscapeKey = true };
+            var options = new DialogOptions { CloseOnEscapeKey = true };
 
-        var parameters = new DialogParameters();
-        parameters.Add("FoodValue", FoodValue);
+            var parameters = new DialogParameters();
+            parameters.Add("onFoodAdd", new EventCallbackFactory().Create(this, new Action<int>(OnFoodValue)));
 
-        DialogService.Show<EatDialog>("What do you want to eat?", parameters, options);
+            DialogService.Show<EatDialog>("What do you want to eat?", parameters, options);
     }
 
+    private void OnFoodValue(int evnt)
+    {
+        FoodValue += evnt;
+    }
 
     private void showerClick()
     {
         var options = new DialogOptions { CloseOnEscapeKey = true };
 
         var parameters = new DialogParameters();
-        parameters.Add("ShowerValue", ShowerValue);
+        parameters.Add("onShowerAdd", new EventCallbackFactory().Create(this, new Action<int>(OnShowerValue)));
 
         DialogService.Show<ShowerDialog>("How do you want clean yourself?", parameters, options);
+    }
+
+    private void OnShowerValue(int evnt)
+    {
+        ShowerValue += evnt;
     }
 
     private async Task sleepClick()
@@ -159,7 +177,15 @@
     {
         var options = new DialogOptions { CloseOnEscapeKey = true };
 
-        DialogService.Show<PlayDialog>("Let's play a game!", options);
+        var parameters = new DialogParameters();
+        parameters.Add("onPlayAdd", new EventCallbackFactory().Create(this, new Action<int>(OnPlayValue)));
+
+        DialogService.Show<PlayDialog>("Let's play a game!", parameters, options);
+    }
+
+    private void OnPlayValue(int evnt)
+    {
+        PlayValue += evnt;
     }
 
     private async Task KeyboardEventHandler(KeyboardEventArgs args)

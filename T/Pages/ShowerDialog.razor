@@ -14,18 +14,18 @@
 @code {
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
 
-    [Parameter] public double ShowerValue { get; set; }
+    [Parameter] public EventCallback<int> onShowerAdd { get; set; }
 
     void Submit() => MudDialog.Close(DialogResult.Ok(true));
 
-    private void Clean1()
+    private async Task Clean1()
     {
-        ShowerValue += 5;
+        await onShowerAdd.InvokeAsync(10);
     }
 
-    private void Clean2()
+    private async Task Clean2()
     {
-        ShowerValue += 10;
+        await onShowerAdd.InvokeAsync(60);
     } 
 
 }

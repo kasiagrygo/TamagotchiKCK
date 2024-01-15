@@ -14,13 +14,16 @@
 @code {
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
 
+    [Parameter] public EventCallback<int> onPlayAdd { get; set; }
+
     void Submit() => MudDialog.Close(DialogResult.Ok(true));
 
     string message = "";
     int randomNumber;
     int userInput;
 
-    void CheckNumber()
+
+    private async Task CheckNumber()
     {
         if (randomNumber == 0)
         {
@@ -43,6 +46,7 @@
         else
         {
             message = "Congratulations! You guessed the correct number!";
+            await onPlayAdd.InvokeAsync(35);
         }
     }
 }
